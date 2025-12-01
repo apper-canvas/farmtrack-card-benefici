@@ -18,7 +18,6 @@ import { isOverdue, isDueSoon } from "@/utils/dateUtils";
 const Tasks = () => {
   const [data, setData] = useState({
     tasks: [],
-    crops: [],
     fields: [],
     farms: [],
   });
@@ -33,7 +32,6 @@ const Tasks = () => {
   const [taskForm, setTaskForm] = useState({
 title: "",
     description: "",
-    cropId: "",
     dueDate: "",
     priority: "medium",
   });
@@ -48,10 +46,9 @@ title: "",
     
     try {
       const [tasks, crops, fields, farms] = await Promise.all([
-        taskService.getAll(),
-        cropService.getAll(),
-        fieldService.getAll(),
+taskService.getAll(),
         farmService.getAll(),
+        fieldService.getAll(),
       ]);
 
       setData({ tasks, crops, fields, farms });
@@ -69,7 +66,6 @@ title: "",
     try {
       const taskData = {
 ...taskForm,
-        cropId: parseInt(taskForm.cropId),
       };
       
       if (editingTask) {
@@ -121,7 +117,6 @@ title: "",
     setTaskForm({
 title: task.title_c,
       description: task.description_c || "",
-      cropId: task.crop_id_c?.Id?.toString() || task.crop_id_c?.toString() || "",
       dueDate: task.due_date_c?.split?.("T")?.[0] || task.due_date_c,
       priority: task.priority_c || "medium",
     });
@@ -245,8 +240,7 @@ const pending = data.tasks.filter(task => !task.completed_c).length;
                 setShowTaskModal(true);
               }}
               variant="primary"
-              size="sm"
-              disabled={data.crops.length === 0}
+size="sm"
             >
               <ApperIcon name="Plus" className="h-4 w-4 mr-2" />
               Add Task
@@ -385,7 +379,6 @@ const pending = data.tasks.filter(task => !task.completed_c).length;
               <TaskCard
                 key={task.Id}
 task={task}
-                crop={data.crops.find(c => c.Id === (task.crop_id_c?.Id || task.crop_id_c))}
                 onComplete={handleTaskComplete}
                 onEdit={handleEditTask}
               />
@@ -434,16 +427,6 @@ task={task}
                 />
 
                 <FormField
-                  label="Crop"
-                  name="cropId"
-                  type="select"
-                  value={taskForm.cropId}
-                  onChange={(e) => setTaskForm(prev => ({ ...prev, cropId: e.target.value }))}
-                  options={data.crops.map(crop => ({
-value: crop.Id.toString(),
-                    label: `${crop.Name} (${data.fields.find(f => f.Id === (crop.field_id_c?.Id || crop.field_id_c))?.Name})`
-                  }))}
-                  required
                 />
 
                 <FormField

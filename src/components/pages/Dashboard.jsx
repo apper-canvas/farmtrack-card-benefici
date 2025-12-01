@@ -87,7 +87,6 @@ const getStatsData = () => {
     const monthlyExpenses = financialData.monthlyExpenses || 0;
     const monthlyProfit = monthlyIncome - monthlyExpenses;
     const totalFarms = data.farms.length;
-    const activeCrops = data.farms.reduce((count, farm) => count + (farm.crops?.length || 0), 0);
     
 const tasks = Array.isArray(data.tasks) ? data.tasks : [];
     const pendingTasks = tasks.filter(task => !task.completed_c).length;
@@ -97,7 +96,6 @@ const tasks = Array.isArray(data.tasks) ? data.tasks : [];
     
     return {
       totalFarms,
-      activeCrops,
       pendingTasks,
       overdueTasks,
       activeTasks: tasks.filter(task => task.status === "pending").length || 0,
@@ -171,14 +169,6 @@ const stats = getStatsData();
             onClick={() => navigate("/farms")}
           />
           
-<StatCard
-            title="Active Crops"
-            value={stats.activeCrops}
-            icon="Sprout"
-            iconColor="text-green-600"
-            iconBackground="bg-green-100"
-            onClick={() => navigate("/farms")}
-          />
           
           <StatCard
             title="Pending Tasks"
