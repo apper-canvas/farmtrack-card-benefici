@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import ApperIcon from '@/components/ApperIcon';
-import Button from '@/components/atoms/Button';
-import Input from '@/components/atoms/Input';
-import Select from '@/components/atoms/Select';
-import FormField from '@/components/molecules/FormField';
-import Loading from '@/components/ui/Loading';
-import ErrorView from '@/components/ui/ErrorView';
-import Empty from '@/components/ui/Empty';
-import { financeService } from '@/services/api/financeService';
-import { toast } from 'react-toastify';
-import { formatDate, formatDateTime, getCurrentMonth, getLastNMonths } from '@/utils/dateUtils';
-import { calculateTotal, calculateMonthlyTotal } from '@/utils/currencyUtils';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { financeService } from "@/services/api/financeService";
+import { toast } from "react-toastify";
+import ApperIcon from "@/components/ApperIcon";
+import Loading from "@/components/ui/Loading";
+import ErrorView from "@/components/ui/ErrorView";
+import Empty from "@/components/ui/Empty";
+import Select from "@/components/atoms/Select";
+import Button from "@/components/atoms/Button";
+import Input from "@/components/atoms/Input";
+import FormField from "@/components/molecules/FormField";
+import { calculateMonthlyTotal, calculateTotal } from "@/utils/currencyUtils";
+import { formatDate, formatDateTime, getCurrentMonth, getLastNMonths } from "@/utils/dateUtils";
 
 function Finance() {
   const navigate = useNavigate();
@@ -99,14 +99,14 @@ function Finance() {
     }
   };
 
-  const handleEdit = (transaction) => {
+const handleEdit = (transaction) => {
     setEditingTransaction(transaction);
     setFormData({
-      type: transaction.type,
-      amount: transaction.amount.toString(),
-      description: transaction.description,
-      category: transaction.category,
-      date: transaction.date
+      type: transaction.type_c,
+      amount: transaction.amount_c?.toString() || "",
+      description: transaction.description_c,
+      category: transaction.category_c,
+      date: transaction.date_c
     });
     setShowForm(true);
   };
@@ -137,20 +137,20 @@ function Finance() {
     setShowForm(false);
   };
 
-  const getFilteredTransactions = () => {
+const getFilteredTransactions = () => {
     let filtered = transactions;
 
     // Filter by type
     if (filter !== 'all') {
-      filtered = filtered.filter(t => t.type === filter);
+      filtered = filtered.filter(t => t.type_c === filter);
     }
 
     // Filter by search query
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(t =>
-        t.description.toLowerCase().includes(query) ||
-        t.category.toLowerCase().includes(query)
+        (t.description_c || "").toLowerCase().includes(query) ||
+        (t.category_c || "").toLowerCase().includes(query)
       );
     }
 
@@ -158,19 +158,19 @@ function Finance() {
     if (selectedMonth === 'current') {
       const { month, year } = getCurrentMonth();
       filtered = filtered.filter(t => {
-        const tDate = new Date(t.date);
-        return tDate.getMonth() === month && tDate.getFullYear() === year;
+        const tDate = new Date(t.date_c);
+        return tDate.getMonth() === parseInt(month) && tDate.getFullYear() === parseInt(year);
       });
     }
 
     // Sort by date (newest first)
-    return filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
+    return filtered.sort((a, b) => new Date(b.date_c) - new Date(a.date_c));
   };
 
-  const getFinancialSummary = () => {
+const getFinancialSummary = () => {
     const { month, year } = getCurrentMonth();
     const currentMonthTransactions = transactions.filter(t => {
-      const tDate = new Date(t.date);
+      const tDate = new Date(t.date_c);
       return tDate.getMonth() === month && tDate.getFullYear() === year;
     });
 
@@ -178,8 +178,8 @@ function Finance() {
     const monthlyExpenses = calculateMonthlyTotal(transactions, 'expense');
     const monthlyProfit = monthlyIncome - monthlyExpenses;
 
-    const totalIncome = calculateTotal(transactions.filter(t => t.type === 'income'));
-    const totalExpenses = calculateTotal(transactions.filter(t => t.type === 'expense'));
+    const totalIncome = calculateTotal(transactions.filter(t => t.type_c === 'income'));
+    const totalExpenses = calculateTotal(transactions.filter(t => t.type_c === 'expense'));
 
     return {
       monthlyIncome,
@@ -469,34 +469,34 @@ function Finance() {
               filteredTransactions.map((transaction) => (
                 <div key={transaction.Id} className="p-6 hover:bg-gray-50 transition-colors">
                   <div className="flex items-center justify-between">
-                    <div className="flex-1">
+<div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
                         <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                          transaction.type === 'income' ? 'bg-green-100' : 'bg-red-100'
+                          transaction.type_c === 'income' ? 'bg-green-100' : 'bg-red-100'
                         }`}>
                           <ApperIcon 
-                            name={transaction.type === 'income' ? 'TrendingUp' : 'TrendingDown'} 
+                            name={transaction.type_c === 'income' ? 'TrendingUp' : 'TrendingDown'} 
                             className={`w-5 h-5 ${
-                              transaction.type === 'income' ? 'text-green-600' : 'text-red-600'
+                              transaction.type_c === 'income' ? 'text-green-600' : 'text-red-600'
                             }`}
                           />
                         </div>
-                        <div>
-                          <h3 className="font-medium text-gray-900">{transaction.description}</h3>
-                          <p className="text-sm text-gray-600">{transaction.category}</p>
+<div>
+                          <h3 className="font-medium text-gray-900">{transaction.description_c}</h3>
+                          <p className="text-sm text-gray-600">{transaction.category_c}</p>
                         </div>
                       </div>
                       <div className="ml-13 flex items-center gap-4 text-sm text-gray-500">
-                        <span>{formatDate(transaction.date)}</span>
+                        <span>{formatDate(transaction.date_c)}</span>
                       </div>
                     </div>
 
                     <div className="flex items-center gap-4">
                       <div className="text-right">
                         <div className={`text-lg font-bold ${
-                          transaction.type === 'income' ? 'text-green-600' : 'text-red-600'
+                          transaction.type_c === 'income' ? 'text-green-600' : 'text-red-600'
                         }`}>
-                          {transaction.type === 'income' ? '+' : '-'}${transaction.amount.toLocaleString()}
+                          {transaction.type_c === 'income' ? '+' : '-'}${transaction.amount_c?.toLocaleString() || '0'}
                         </div>
                       </div>
 

@@ -103,15 +103,27 @@ const SidebarNavigation = () => {
           </nav>
 
           {/* Footer */}
-          <div className="p-4 border-t border-gray-200">
-            <div className="flex items-center space-x-3 px-4 py-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-primary-500 to-primary-600 rounded-full flex items-center justify-center">
-                <ApperIcon name="User" className="w-4 h-4 text-white" />
+<div className="p-4 border-t border-gray-200">
+            <div className="flex items-center justify-between px-4 py-2">
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-gradient-to-br from-primary-500 to-primary-600 rounded-full flex items-center justify-center">
+                  <ApperIcon name="User" className="w-4 h-4 text-white" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-900">Farm Manager</p>
+                  <p className="text-xs text-gray-500">Premium Account</p>
+                </div>
               </div>
-              <div>
-                <p className="text-sm font-medium text-gray-900">Farm Manager</p>
-                <p className="text-xs text-gray-500">Premium Account</p>
-              </div>
+              <button
+                onClick={() => {
+                  const { useAuth } = require('@/layouts/Root');
+                  const { logout } = useAuth();
+                  logout();
+                }}
+                className="text-xs text-gray-500 hover:text-gray-700 transition-colors"
+              >
+                Logout
+              </button>
             </div>
           </div>
         </div>

@@ -31,7 +31,7 @@ const Tasks = () => {
 
   // Form state
   const [taskForm, setTaskForm] = useState({
-    title: "",
+title: "",
     description: "",
     cropId: "",
     dueDate: "",
@@ -68,7 +68,7 @@ const Tasks = () => {
     
     try {
       const taskData = {
-        ...taskForm,
+...taskForm,
         cropId: parseInt(taskForm.cropId),
       };
       
@@ -119,11 +119,11 @@ const Tasks = () => {
   const handleEditTask = (task) => {
     setEditingTask(task);
     setTaskForm({
-      title: task.title,
-      description: task.description || "",
-      cropId: task.cropId.toString(),
-      dueDate: task.dueDate.split("T")[0],
-      priority: task.priority || "medium",
+title: task.title_c,
+      description: task.description_c || "",
+      cropId: task.crop_id_c?.Id?.toString() || task.crop_id_c?.toString() || "",
+      dueDate: task.due_date_c?.split?.("T")?.[0] || task.due_date_c,
+      priority: task.priority_c || "medium",
     });
     setShowTaskModal(true);
   };
@@ -164,44 +164,44 @@ const Tasks = () => {
     
     // Status filter
     if (filterStatus === "pending") {
-      filteredTasks = filteredTasks.filter(task => !task.completed);
+filteredTasks = filteredTasks.filter(task => !task.completed_c);
     } else if (filterStatus === "completed") {
-      filteredTasks = filteredTasks.filter(task => task.completed);
+      filteredTasks = filteredTasks.filter(task => task.completed_c);
     } else if (filterStatus === "overdue") {
       filteredTasks = filteredTasks.filter(task => 
-        !task.completed && isOverdue(task.dueDate)
+        !task.completed_c && isOverdue(task.due_date_c)
       );
     } else if (filterStatus === "due-soon") {
       filteredTasks = filteredTasks.filter(task => 
-        !task.completed && isDueSoon(task.dueDate)
+        !task.completed_c && isDueSoon(task.due_date_c)
       );
     }
     
     // Priority filter
-    if (filterPriority !== "all") {
+if (filterPriority !== "all") {
       filteredTasks = filteredTasks.filter(task => 
-        (task.priority || "medium").toLowerCase() === filterPriority
+        (task.priority_c || "medium").toLowerCase() === filterPriority
       );
     }
     
     // Sort by due date (soonest first)
-    filteredTasks.sort((a, b) => {
-      if (a.completed && !b.completed) return 1;
-      if (!a.completed && b.completed) return -1;
-      return new Date(a.dueDate) - new Date(b.dueDate);
+filteredTasks.sort((a, b) => {
+      if (a.completed_c && !b.completed_c) return 1;
+      if (!a.completed_c && b.completed_c) return -1;
+      return new Date(a.due_date_c) - new Date(b.due_date_c);
     });
     
     return filteredTasks;
   };
 
   const getTaskStats = () => {
-    const pending = data.tasks.filter(task => !task.completed).length;
-    const completed = data.tasks.filter(task => task.completed).length;
+const pending = data.tasks.filter(task => !task.completed_c).length;
+    const completed = data.tasks.filter(task => task.completed_c).length;
     const overdue = data.tasks.filter(task => 
-      !task.completed && isOverdue(task.dueDate)
+      !task.completed_c && isOverdue(task.due_date_c)
     ).length;
     const dueSoon = data.tasks.filter(task => 
-      !task.completed && isDueSoon(task.dueDate)
+      !task.completed_c && isDueSoon(task.due_date_c)
     ).length;
     
     return { pending, completed, overdue, dueSoon };
@@ -384,8 +384,8 @@ const Tasks = () => {
             {filteredTasks.map(task => (
               <TaskCard
                 key={task.Id}
-                task={task}
-                crop={data.crops.find(c => c.Id === task.cropId)}
+task={task}
+                crop={data.crops.find(c => c.Id === (task.crop_id_c?.Id || task.crop_id_c))}
                 onComplete={handleTaskComplete}
                 onEdit={handleEditTask}
               />
@@ -440,8 +440,8 @@ const Tasks = () => {
                   value={taskForm.cropId}
                   onChange={(e) => setTaskForm(prev => ({ ...prev, cropId: e.target.value }))}
                   options={data.crops.map(crop => ({
-                    value: crop.Id.toString(),
-                    label: `${crop.name} (${data.fields.find(f => f.Id === crop.fieldId)?.name})`
+value: crop.Id.toString(),
+                    label: `${crop.Name} (${data.fields.find(f => f.Id === (crop.field_id_c?.Id || crop.field_id_c))?.Name})`
                   }))}
                   required
                 />

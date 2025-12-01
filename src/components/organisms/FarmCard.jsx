@@ -25,21 +25,21 @@ const FarmCard = ({ farm, onEdit, onView, className = "" }) => {
       <div className="flex items-start justify-between mb-4">
         <div className="flex-1">
           <h3 className="font-bold text-lg text-gray-900 mb-1">
-            {farm.name}
+{farm.Name}
           </h3>
           <div className="flex items-center text-gray-500 text-sm mb-2">
-            <ApperIcon name="MapPin" className="h-4 w-4 mr-1" />
-            {farm.location}
+<ApperIcon name="MapPin" className="h-4 w-4 mr-1" />
+            {farm.location_c}
           </div>
           <div className="flex items-center text-gray-500 text-sm">
-            <ApperIcon name="Square" className="h-4 w-4 mr-1" />
-            {formatNumber(farm.totalArea, 1)} acres
+<ApperIcon name="Square" className="h-4 w-4 mr-1" />
+            {formatNumber(farm.total_area_c, 1)} acres
           </div>
         </div>
         
         <div className="flex items-center space-x-2">
           <Badge variant="primary">
-            {farm.soilType}
+{farm.soil_type_c}
           </Badge>
           <button
             onClick={handleEditClick}

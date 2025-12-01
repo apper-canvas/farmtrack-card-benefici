@@ -5,8 +5,8 @@ import ProgressBar from "@/components/molecules/ProgressBar";
 import { formatDate, getDaysUntilHarvest, getCropGrowthStage } from "@/utils/dateUtils";
 
 const CropCard = ({ crop, field, onEdit, onView, className = "" }) => {
-  const growthData = getCropGrowthStage(crop.plantingDate, crop.expectedHarvestDate);
-  const daysUntilHarvest = getDaysUntilHarvest(crop.plantingDate, crop.expectedHarvestDate);
+const growthData = getCropGrowthStage(crop.planting_date_c, crop.expected_harvest_date_c);
+  const daysUntilHarvest = getDaysUntilHarvest(crop.planting_date_c, crop.expected_harvest_date_c);
 
   const handleClick = () => {
     if (onView) {
@@ -42,21 +42,21 @@ const CropCard = ({ crop, field, onEdit, onView, className = "" }) => {
       <div className="flex items-start justify-between mb-4">
         <div className="flex-1">
           <div className="flex items-center justify-between mb-2">
-            <h3 className="font-bold text-lg text-gray-900">
-              {crop.name}
+<h3 className="font-bold text-lg text-gray-900">
+              {crop.Name}
             </h3>
             {getStatusBadge()}
           </div>
           
-          {crop.variety && (
+{crop.variety_c && (
             <p className="text-sm text-gray-600 mb-2 font-medium">
-              {crop.variety}
+              {crop.variety_c}
             </p>
           )}
           
-          <div className="flex items-center text-gray-500 text-sm mb-2">
+<div className="flex items-center text-gray-500 text-sm mb-2">
             <ApperIcon name="MapPin" className="h-4 w-4 mr-1" />
-            {field?.name || "Unknown Field"}
+            {field?.Name || "Unknown Field"}
           </div>
         </div>
         
@@ -85,7 +85,7 @@ const CropCard = ({ crop, field, onEdit, onView, className = "" }) => {
           <div>
             <p className="text-gray-500 mb-1">Planted</p>
             <p className="font-medium text-gray-900">
-              {formatDate(crop.plantingDate, "MMM d")}
+{formatDate(crop.planting_date_c, "MMM d")}
             </p>
           </div>
           <div>
@@ -93,9 +93,9 @@ const CropCard = ({ crop, field, onEdit, onView, className = "" }) => {
               {daysUntilHarvest > 0 ? "Harvest in" : "Harvest"}
             </p>
             <p className="font-medium text-gray-900">
-              {daysUntilHarvest > 0 
+{daysUntilHarvest > 0 
                 ? `${daysUntilHarvest} days`
-                : formatDate(crop.expectedHarvestDate, "MMM d")
+                : formatDate(crop.expected_harvest_date_c, "MMM d")
               }
             </p>
           </div>

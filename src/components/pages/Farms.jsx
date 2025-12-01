@@ -28,14 +28,14 @@ const Farms = () => {
   const [editingCrop, setEditingCrop] = useState(null);
 
   // Form states
-  const [farmForm, setFarmForm] = useState({
+const [farmForm, setFarmForm] = useState({
     name: "",
     location: "",
     totalArea: "",
     soilType: "",
   });
   
-  const [cropForm, setCropForm] = useState({
+const [cropForm, setCropForm] = useState({
     name: "",
     variety: "",
     fieldId: "",
@@ -145,11 +145,11 @@ const Farms = () => {
 
   const handleEditFarm = (farm) => {
     setEditingFarm(farm);
-    setFarmForm({
-      name: farm.name,
-      location: farm.location,
-      totalArea: farm.totalArea.toString(),
-      soilType: farm.soilType,
+setFarmForm({
+      name: farm.Name,
+      location: farm.location_c,
+      totalArea: farm.total_area_c?.toString() || "",
+      soilType: farm.soil_type_c,
     });
     setShowFarmModal(true);
   };
@@ -157,12 +157,12 @@ const Farms = () => {
   const handleEditCrop = (crop) => {
     setEditingCrop(crop);
     setCropForm({
-      name: crop.name,
-      variety: crop.variety || "",
-      fieldId: crop.fieldId.toString(),
-      plantingDate: crop.plantingDate.split("T")[0],
-      expectedHarvestDate: crop.expectedHarvestDate.split("T")[0],
-      notes: crop.notes || "",
+name: crop.Name,
+      variety: crop.variety_c || "",
+      fieldId: (crop.field_id_c?.Id || crop.field_id_c)?.toString() || "",
+      plantingDate: crop.planting_date_c?.split?.("T")?.[0] || crop.planting_date_c,
+      expectedHarvestDate: crop.expected_harvest_date_c?.split?.("T")?.[0] || crop.expected_harvest_date_c,
+      notes: crop.notes_c || "",
     });
     setShowCropModal(true);
   };
@@ -190,13 +190,13 @@ const Farms = () => {
   };
 
   const getFieldsForFarm = (farmId) => {
-    return data.fields.filter(field => field.farmId === farmId);
+return data.fields.filter(field => (field.farm_id_c?.Id || field.farm_id_c) === farmId);
   };
 
   const getCropsForFarm = (farmId) => {
     const farmFields = getFieldsForFarm(farmId);
     return data.crops.filter(crop => 
-      farmFields.some(field => field.Id === crop.fieldId)
+farmFields.some(field => field.Id === (crop.field_id_c?.Id || crop.field_id_c))
     );
   };
 
@@ -293,7 +293,7 @@ const Farms = () => {
         ) : (
           <div className="space-y-8">
             {data.farms.map(farm => {
-              const farmFields = getFieldsForFarm(farm.Id);
+const farmFields = getFieldsForFarm(farm.Id);
               const farmCrops = getCropsForFarm(farm.Id);
               
               return (
@@ -302,7 +302,7 @@ const Farms = () => {
                     farm={{
                       ...farm,
                       fieldCount: farmFields.length,
-                      activeCrops: farmCrops.filter(crop => crop.status !== "harvested").length,
+                      activeCrops: farmCrops.filter(crop => crop.status_c !== "harvested").length,
                     }}
                     onEdit={handleEditFarm}
                     onView={setSelectedFarm}
@@ -315,10 +315,10 @@ const Farms = () => {
                       </h3>
                       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {farmCrops.map(crop => (
-                          <CropCard
+<CropCard
                             key={crop.Id}
                             crop={crop}
-                            field={data.fields.find(f => f.Id === crop.fieldId)}
+                            field={data.fields.find(f => f.Id === (crop.field_id_c?.Id || crop.field_id_c))}
                             onEdit={handleEditCrop}
                           />
                         ))}

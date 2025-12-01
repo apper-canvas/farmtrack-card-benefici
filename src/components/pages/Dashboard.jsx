@@ -15,6 +15,7 @@ import WeatherCard from "@/components/organisms/WeatherCard";
 import TaskCard from "@/components/organisms/TaskCard";
 import Tasks from "@/components/pages/Tasks";
 import Farms from "@/components/pages/Farms";
+import Finance from "@/components/pages/Finance";
 import StatCard from "@/components/molecules/StatCard";
 import FloatingActionButton from "@/components/molecules/FloatingActionButton";
 import { calculateTotal, formatCurrency } from "@/utils/currencyUtils";
@@ -83,14 +84,14 @@ const getStatsData = () => {
     const monthlyIncome = financialData.monthlyIncome || 0;
     const monthlyExpenses = financialData.monthlyExpenses || 0;
     const monthlyProfit = monthlyIncome - monthlyExpenses;
-    const totalFarms = data.farms.length;
+const totalFarms = data.farms.length;
     const activeCrops = data.crops.filter(crop => 
-      crop.status !== "harvested"
+      crop.status_c !== "harvested"
     ).length;
     
-    const pendingTasks = data.tasks.filter(task => !task.completed).length;
+const pendingTasks = data.tasks.filter(task => !task.completed_c).length;
     const overdueTasks = data.tasks.filter(task => 
-      !task.completed && isOverdue(task.dueDate)
+      !task.completed_c && isOverdue(task.due_date_c)
     ).length;
     
     return {
@@ -104,8 +105,8 @@ const getStatsData = () => {
 
   const getTodaysTasks = () => {
     return data.tasks
-      .filter(task => !task.completed)
-      .filter(task => isDueSoon(task.dueDate, 2) || isOverdue(task.dueDate))
+.filter(task => !task.completed_c)
+      .filter(task => isDueSoon(task.due_date_c, 2) || isOverdue(task.due_date_c))
       .slice(0, 5);
   };
 
@@ -203,11 +204,11 @@ const stats = getStatsData();
             <div className="space-y-4">
               <div className="flex justify-between items-center">
                 <span className="text-gray-600">Monthly Income</span>
-                <span className="font-semibold text-green-600">
+<span className="font-semibold text-green-600">
                   ${data.financialData?.monthlyIncome?.toLocaleString() || '0'}
                 </span>
               </div>
-              <div className="flex justify-between items-center">
+<div className="flex justify-between items-center">
                 <span className="text-gray-600">Monthly Expenses</span>
                 <span className="font-semibold text-red-600">
                   ${data.financialData?.monthlyExpenses?.toLocaleString() || '0'}
