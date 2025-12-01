@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { farmService } from "@/services/api/farmService";
-import { cropService } from "@/services/api/cropService";
 import { taskService } from "@/services/api/taskService";
 import { weatherService } from "@/services/api/weatherService";
 import { toast } from "react-toastify";
@@ -25,7 +24,6 @@ const Dashboard = () => {
   const navigate = useNavigate();
 const [data, setData] = useState({
     farms: [],
-    crops: [],
     tasks: [],
     expenses: [],
     income: [],
@@ -46,13 +44,12 @@ const [data, setData] = useState({
     try {
       const [farms, crops, tasks, weather, financialData] = await Promise.all([
         farmService.getAll(),
-        cropService.getAll(),
         taskService.getAll(),
         weatherService.getCurrentWeather(),
         financeService.getTransactionSummary(),
       ]);
 
-        setData({ farms, crops, tasks, weather, financialData });
+setData({ farms, tasks, weather, financialData });
     } catch (err) {
       console.error("Failed to load dashboard data:", err);
       setError("Failed to load dashboard data. Please try again.");
@@ -84,12 +81,10 @@ const getStatsData = () => {
     const monthlyIncome = financialData.monthlyIncome || 0;
     const monthlyExpenses = financialData.monthlyExpenses || 0;
     const monthlyProfit = monthlyIncome - monthlyExpenses;
-const totalFarms = data.farms.length;
-    const activeCrops = data.crops.filter(crop => 
-      crop.status_c !== "harvested"
-    ).length;
+    const totalFarms = data.farms.length;
+    const activeCrops = data.farms.reduce((count, farm) => count + (farm.crops?.length || 0), 0);
     
-const pendingTasks = data.tasks.filter(task => !task.completed_c).length;
+    const pendingTasks = data.tasks.filter(task => !task.completed_c).length;
     const overdueTasks = data.tasks.filter(task => 
       !task.completed_c && isOverdue(task.due_date_c)
     ).length;
@@ -169,12 +164,12 @@ const stats = getStatsData();
             onClick={() => navigate("/farms")}
           />
           
-          <StatCard
+<StatCard
             title="Active Crops"
             value={stats.activeCrops}
-            icon="Wheat"
-            iconColor="text-primary-600"
-            iconBackground="bg-primary-100"
+            icon="Sprout"
+            iconColor="text-green-600"
+            iconBackground="bg-green-100"
             onClick={() => navigate("/farms")}
           />
           
@@ -187,7 +182,8 @@ const stats = getStatsData();
             iconBackground={stats.overdueTasks > 0 ? "bg-red-100" : "bg-accent-100"}
             onClick={() => navigate("/tasks")}
           />
-<StatCard
+          
+          <StatCard
             title="Active Tasks"
             value={stats.activeTasks}
             icon="Calendar"
@@ -345,11 +341,6 @@ const stats = getStatsData();
               <div className="text-sm text-gray-600">Total Farms</div>
             </div>
             
-            <div className="text-center p-4 bg-primary-50 rounded-lg">
-              <ApperIcon name="Wheat" className="h-8 w-8 text-primary-600 mx-auto mb-2" />
-              <div className="text-2xl font-bold text-gray-900">{stats.activeCrops}</div>
-              <div className="text-sm text-gray-600">Active Crops</div>
-            </div>
             
             <div className="text-center p-4 bg-accent-50 rounded-lg">
               <ApperIcon name="AlertCircle" className="h-8 w-8 text-accent-600 mx-auto mb-2" />

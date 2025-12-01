@@ -12,15 +12,10 @@ const navItems = [
       href: "",
       icon: "Home",
     },
-    {
+{
       name: "Farms", 
       href: "farms",
       icon: "MapPin",
-    },
-    {
-      name: "Crops",
-      href: "crops",
-      icon: "Wheat",
     },
     {
       name: "Tasks",

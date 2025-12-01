@@ -1,23 +1,20 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { farmService } from "@/services/api/farmService";
+import { fieldService } from "@/services/api/fieldService";
+import { toast } from "react-toastify";
 import ApperIcon from "@/components/ApperIcon";
-import Button from "@/components/atoms/Button";
-import FarmCard from "@/components/organisms/FarmCard";
-import CropCard from "@/components/organisms/CropCard";
-import FloatingActionButton from "@/components/molecules/FloatingActionButton";
-import FormField from "@/components/molecules/FormField";
 import Loading from "@/components/ui/Loading";
 import ErrorView from "@/components/ui/ErrorView";
 import Empty from "@/components/ui/Empty";
-import { farmService } from "@/services/api/farmService";
-import { fieldService } from "@/services/api/fieldService";
-import { cropService } from "@/services/api/cropService";
-import { toast } from "react-toastify";
+import Button from "@/components/atoms/Button";
+import FarmCard from "@/components/organisms/FarmCard";
+import FloatingActionButton from "@/components/molecules/FloatingActionButton";
+import FormField from "@/components/molecules/FormField";
 
 const Farms = () => {
   const [data, setData] = useState({
     farms: [],
-    fields: [],
-    crops: [],
+fields: []
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -25,8 +22,6 @@ const Farms = () => {
   const [showCropModal, setShowCropModal] = useState(false);
   const [selectedFarm, setSelectedFarm] = useState(null);
   const [editingFarm, setEditingFarm] = useState(null);
-  const [editingCrop, setEditingCrop] = useState(null);
-
   // Form states
 const [farmForm, setFarmForm] = useState({
     name: "",
@@ -35,14 +30,6 @@ const [farmForm, setFarmForm] = useState({
     soilType: "",
   });
   
-const [cropForm, setCropForm] = useState({
-    name: "",
-    variety: "",
-    fieldId: "",
-    plantingDate: "",
-    expectedHarvestDate: "",
-    notes: "",
-  });
 
   useEffect(() => {
     loadData();
@@ -53,13 +40,12 @@ const [cropForm, setCropForm] = useState({
     setError("");
     
     try {
-      const [farms, fields, crops] = await Promise.all([
+const [farms, fields] = await Promise.all([
         farmService.getAll(),
         fieldService.getAll(),
-        cropService.getAll(),
       ]);
-
-      setData({ farms, fields, crops });
+      
+      setData({ farms, fields });
     } catch (err) {
       console.error("Failed to load farms data:", err);
       setError("Failed to load farms data. Please try again.");
@@ -106,42 +92,6 @@ const [cropForm, setCropForm] = useState({
     }
   };
 
-  const handleCropSubmit = async (e) => {
-    e.preventDefault();
-    
-    try {
-      const cropData = {
-        ...cropForm,
-        status: "planted",
-      };
-      
-      if (editingCrop) {
-        const updatedCrop = await cropService.update(editingCrop.Id, cropData);
-        
-        setData(prev => ({
-          ...prev,
-          crops: prev.crops.map(c => c.Id === editingCrop.Id ? updatedCrop : c)
-        }));
-        
-        toast.success("Crop updated successfully!");
-      } else {
-        const newCrop = await cropService.create(cropData);
-        
-        setData(prev => ({
-          ...prev,
-          crops: [...prev.crops, newCrop]
-        }));
-        
-        toast.success("Crop added successfully!");
-      }
-      
-      resetCropForm();
-      setShowCropModal(false);
-    } catch (err) {
-      console.error("Failed to save crop:", err);
-      toast.error("Failed to save crop. Please try again.");
-    }
-  };
 
   const handleEditFarm = (farm) => {
     setEditingFarm(farm);
@@ -154,18 +104,6 @@ setFarmForm({
     setShowFarmModal(true);
   };
 
-  const handleEditCrop = (crop) => {
-    setEditingCrop(crop);
-    setCropForm({
-name: crop.Name,
-      variety: crop.variety_c || "",
-      fieldId: (crop.field_id_c?.Id || crop.field_id_c)?.toString() || "",
-      plantingDate: crop.planting_date_c?.split?.("T")?.[0] || crop.planting_date_c,
-      expectedHarvestDate: crop.expected_harvest_date_c?.split?.("T")?.[0] || crop.expected_harvest_date_c,
-      notes: crop.notes_c || "",
-    });
-    setShowCropModal(true);
-  };
 
   const resetFarmForm = () => {
     setFarmForm({
@@ -175,30 +113,13 @@ name: crop.Name,
       soilType: "",
     });
     setEditingFarm(null);
-  };
-
-  const resetCropForm = () => {
-    setCropForm({
-      name: "",
-      variety: "",
-      fieldId: "",
-      plantingDate: "",
-      expectedHarvestDate: "",
-      notes: "",
-    });
-    setEditingCrop(null);
+setEditingFarm(null);
   };
 
   const getFieldsForFarm = (farmId) => {
 return data.fields.filter(field => (field.farm_id_c?.Id || field.farm_id_c) === farmId);
   };
 
-  const getCropsForFarm = (farmId) => {
-    const farmFields = getFieldsForFarm(farmId);
-    return data.crops.filter(crop => 
-farmFields.some(field => field.Id === (crop.field_id_c?.Id || crop.field_id_c))
-    );
-  };
 
 const soilTypeOptions = [
     { value: "Clay", label: "Clay" },
@@ -209,18 +130,6 @@ const soilTypeOptions = [
     { value: "Chalk", label: "Chalk" },
   ];
 
-  const cropOptions = [
-    { value: "Wheat", label: "Wheat" },
-    { value: "Corn", label: "Corn" },
-    { value: "Soybeans", label: "Soybeans" },
-    { value: "Cotton", label: "Cotton" },
-    { value: "Alfalfa", label: "Alfalfa" },
-    { value: "Tomatoes", label: "Tomatoes" },
-    { value: "Bell Peppers", label: "Bell Peppers" },
-    { value: "Almonds", label: "Almonds" },
-    { value: "Rice", label: "Rice" },
-    { value: "Barley", label: "Barley" },
-  ];
 
   if (loading) {
     return <Loading message="Loading your farms..." variant="list" />;
@@ -246,18 +155,6 @@ const soilTypeOptions = [
             </div>
             
             <div className="flex items-center space-x-3">
-              <Button
-                onClick={() => {
-                  resetCropForm();
-                  setShowCropModal(true);
-                }}
-                variant="outline"
-                size="sm"
-                disabled={data.fields.length === 0}
-              >
-                <ApperIcon name="Wheat" className="h-4 w-4 mr-2" />
-                Add Crop
-              </Button>
               
               <Button
                 onClick={() => {
@@ -293,7 +190,6 @@ const soilTypeOptions = [
           <div className="space-y-8">
             {data.farms.map(farm => {
 const farmFields = getFieldsForFarm(farm.Id);
-              const farmCrops = getCropsForFarm(farm.Id);
               
               return (
                 <div key={farm.Id} className="space-y-6">
@@ -301,29 +197,10 @@ const farmFields = getFieldsForFarm(farm.Id);
                     farm={{
                       ...farm,
                       fieldCount: farmFields.length,
-                      activeCrops: farmCrops.filter(crop => crop.status_c !== "harvested").length,
                     }}
                     onEdit={handleEditFarm}
                     onView={setSelectedFarm}
                   />
-                  
-                  {farmCrops.length > 0 && (
-                    <div className="ml-6 space-y-4">
-                      <h3 className="text-lg font-semibold text-gray-800">
-                        Crops ({farmCrops.length})
-                      </h3>
-                      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {farmCrops.map(crop => (
-<CropCard
-                            key={crop.Id}
-                            crop={crop}
-                            field={data.fields.find(f => f.Id === (crop.field_id_c?.Id || crop.field_id_c))}
-                            onEdit={handleEditCrop}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  )}
                 </div>
               );
             })}
@@ -414,109 +291,7 @@ const farmFields = getFieldsForFarm(farm.Id);
         </div>
       )}
 
-      {/* Crop Modal */}
-      {showCropModal && (
-        <div className="fixed inset-0 z-50 overflow-y-auto">
-          <div className="flex items-center justify-center min-h-screen p-4">
-            <div className="fixed inset-0 bg-black bg-opacity-50 transition-opacity" onClick={() => setShowCropModal(false)} />
-            
-            <div className="relative bg-white rounded-xl shadow-xl max-w-md w-full p-6 animate-scale-in">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold text-gray-900">
-                  {editingCrop ? "Edit Crop" : "Add New Crop"}
-                </h3>
-                <button
-                  onClick={() => setShowCropModal(false)}
-                  className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors"
-                >
-                  <ApperIcon name="X" className="h-5 w-5" />
-                </button>
-              </div>
-
-              <form onSubmit={handleCropSubmit} className="space-y-4">
-                <FormField
-                  label="Crop Type"
-                  name="name"
-                  type="select"
-                  value={cropForm.name}
-                  onChange={(e) => setCropForm(prev => ({ ...prev, name: e.target.value }))}
-                  options={cropOptions}
-                  required
-                />
-
-                <FormField
-                  label="Variety"
-                  name="variety"
-                  value={cropForm.variety}
-                  onChange={(e) => setCropForm(prev => ({ ...prev, variety: e.target.value }))}
-                  placeholder="Enter crop variety"
-                />
-
-                <FormField
-                  label="Field"
-                  name="fieldId"
-                  type="select"
-                  value={cropForm.fieldId}
-                  onChange={(e) => setCropForm(prev => ({ ...prev, fieldId: e.target.value }))}
-                  options={data.fields.map(field => ({
-                    value: field.Id.toString(),
-                    label: `${field.name} (${data.farms.find(f => f.Id === field.farmId)?.name})`
-                  }))}
-                  required
-                />
-
-                <FormField
-                  label="Planting Date"
-                  name="plantingDate"
-                  type="date"
-                  value={cropForm.plantingDate}
-                  onChange={(e) => setCropForm(prev => ({ ...prev, plantingDate: e.target.value }))}
-                  required
-                />
-
-                <FormField
-                  label="Expected Harvest Date"
-                  name="expectedHarvestDate"
-                  type="date"
-                  value={cropForm.expectedHarvestDate}
-                  onChange={(e) => setCropForm(prev => ({ ...prev, expectedHarvestDate: e.target.value }))}
-                  required
-                />
-
-                <FormField
-                  label="Notes"
-                  name="notes"
-                  type="textarea"
-                  value={cropForm.notes}
-                  onChange={(e) => setCropForm(prev => ({ ...prev, notes: e.target.value }))}
-                  placeholder="Enter any additional notes"
-                  rows={3}
-                />
-
-                <div className="flex space-x-3 pt-4">
-                  <Button
-                    type="button"
-                    onClick={() => setShowCropModal(false)}
-                    variant="outline"
-                    className="flex-1"
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    type="submit"
-                    variant="primary"
-                    className="flex-1"
-                  >
-                    {editingCrop ? "Update Crop" : "Add Crop"}
-                  </Button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Floating Action Button */}
+{/* Floating Action Button */}
       <FloatingActionButton
         onClick={() => {
           resetFarmForm();

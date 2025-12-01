@@ -61,15 +61,6 @@ const FarmCard = ({ farm, onEdit, onView, className = "" }) => {
           </p>
         </div>
         
-        <div className="bg-primary-50 rounded-lg p-3">
-          <div className="flex items-center text-primary-700 text-sm mb-1">
-            <ApperIcon name="Wheat" className="h-4 w-4 mr-1" />
-            Active Crops
-          </div>
-          <p className="text-lg font-bold text-primary-900">
-            {farm.activeCrops || 0}
-          </p>
-        </div>
       </div>
     </div>
   );

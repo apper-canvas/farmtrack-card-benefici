@@ -7,7 +7,6 @@ import Root from "@/layouts/Root";
 // Lazy load components
 const Dashboard = lazy(() => import('@/components/pages/Dashboard'));
 const Farms = lazy(() => import('@/components/pages/Farms'));
-const Crops = lazy(() => import('@/components/pages/Crops'));
 const Tasks = lazy(() => import('@/components/pages/Tasks'));
 const Weather = lazy(() => import("@/components/pages/Weather"));
 const Finance = lazy(() => import("@/components/pages/Finance"));
@@ -64,10 +63,6 @@ const mainRoutes = [
 createRoute({
     path: "farms",
     element: <Farms />,
-  }),
-  createRoute({
-    path: "crops",
-    element: <Crops />,
   }),
   createRoute({
     path: "tasks",
