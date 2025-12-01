@@ -61,9 +61,13 @@ const mainRoutes = [
     index: true,
     element: <Dashboard />,
   }),
-  createRoute({
+createRoute({
     path: "farms",
     element: <Farms />,
+  }),
+  createRoute({
+    path: "crops",
+    element: <Crops />,
   }),
   createRoute({
     path: "tasks",
