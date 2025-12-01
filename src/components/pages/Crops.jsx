@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import ApperIcon from '@/components/ApperIcon';
-import Button from '@/components/atoms/Button';
-import Input from '@/components/atoms/Input';
-import Select from '@/components/atoms/Select';
-import Textarea from '@/components/atoms/Textarea';
-import Label from '@/components/atoms/Label';
-import CropCard from '@/components/organisms/CropCard';
-import FloatingActionButton from '@/components/molecules/FloatingActionButton';
-import FormField from '@/components/molecules/FormField';
-import Loading from '@/components/ui/Loading';
-import ErrorView from '@/components/ui/ErrorView';
-import Empty from '@/components/ui/Empty';
-import { cropService } from '@/services/api/cropService';
-import { fieldService } from '@/services/api/fieldService';
-import { toast } from 'react-toastify';
+import React, { useEffect, useState } from "react";
+import { cropService } from "@/services/api/cropService";
+import { fieldService } from "@/services/api/fieldService";
+import { toast } from "react-toastify";
+import ApperIcon from "@/components/ApperIcon";
+import Loading from "@/components/ui/Loading";
+import ErrorView from "@/components/ui/ErrorView";
+import Empty from "@/components/ui/Empty";
+import Textarea from "@/components/atoms/Textarea";
+import Select from "@/components/atoms/Select";
+import Label from "@/components/atoms/Label";
+import Button from "@/components/atoms/Button";
+import Input from "@/components/atoms/Input";
+import CropCard from "@/components/organisms/CropCard";
+import FloatingActionButton from "@/components/molecules/FloatingActionButton";
+import FormField from "@/components/molecules/FormField";
 
 const Crops = () => {
   const [crops, setCrops] = useState([]);
@@ -331,7 +331,7 @@ const handleEditCrop = (crop) => {
                     <option value="">Select a field</option>
                     {fields.map((field) => (
                       <option key={field.Id} value={field.Id}>
-                        {field.Name || 'Unnamed Field'} ({field.area_c || 0} acres)
+                        {field.Name || field.name || 'Unnamed Field'} ({field.area_c || 0} acres)
                       </option>
                     ))}
                   </Select>
