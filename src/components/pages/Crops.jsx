@@ -44,12 +44,14 @@ const Crops = () => {
     setLoading(true);
     setError(null);
     try {
-      const [cropsData, fieldsData] = await Promise.all([
+const [cropsData, fieldsData] = await Promise.all([
         cropService.getAll(),
         fieldService.getAll()
       ]);
       setCrops(cropsData);
-      setFields(fieldsData);
+      // Ensure fields data is properly formatted
+      const validFields = Array.isArray(fieldsData) ? fieldsData.filter(field => field && field.Id) : [];
+      setFields(validFields);
     } catch (err) {
       setError(err.message);
       console.error('Error loading crops data:', err);
@@ -101,7 +103,7 @@ const Crops = () => {
     }
   };
 
-  const handleEditCrop = (crop) => {
+const handleEditCrop = (crop) => {
     setEditingCrop(crop);
     setFormData({
       name: crop.Name || '',
@@ -320,8 +322,7 @@ const Crops = () => {
                     placeholder="e.g., Cherry, Roma, Sweet Corn"
                   />
                 </FormField>
-
-                <FormField label="Field" required>
+<FormField label="Field" required>
                   <Select
                     value={formData.fieldId}
                     onChange={(e) => setFormData(prev => ({ ...prev, fieldId: e.target.value }))}
@@ -330,7 +331,7 @@ const Crops = () => {
                     <option value="">Select a field</option>
                     {fields.map((field) => (
                       <option key={field.Id} value={field.Id}>
-                        {field.Name} ({field.area_c} acres)
+                        {field.Name || 'Unnamed Field'} ({field.area_c || 0} acres)
                       </option>
                     ))}
                   </Select>
