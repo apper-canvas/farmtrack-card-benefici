@@ -31,6 +31,13 @@
         "conditions": [
           {
             "label": "User must be logged in to view crops",
+            "rule": "authenticated",
+"/finance": {
+    "allow": {
+      "when": {
+        "conditions": [
+          {
+            "label": "User must be logged in to view finance",
             "rule": "authenticated"
           }
         ]
@@ -39,14 +46,21 @@
       "excludeRedirectQuery": false
     }
   },
-  "/tasks": {
+  "/labor": {
     "allow": {
       "when": {
         "conditions": [
-{
-            "label": "User must be logged in to view tasks",
+          {
+            "label": "User must be logged in to view labor",
             "rule": "authenticated"
           }
+        ]
+      },
+      "redirectOnDeny": "/login",
+      "excludeRedirectQuery": false,
+            "label": "User must be logged in to view tasks",
+            "rule": "authenticated"
+          }}}
         ]
       },
       "redirectOnDeny": "/login"

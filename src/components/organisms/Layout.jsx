@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { NavLink, Outlet } from "react-router-dom";
 import ApperIcon from "@/components/ApperIcon";
+import Finance from "@/components/pages/Finance";
 import { useAuth } from "@/layouts/Root";
 const SidebarNavigation = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -90,15 +91,15 @@ const navItems = [
                         : "text-gray-600 hover:bg-gray-50 hover:text-secondary-600"
                     }`
                   }
-                >
+>
                   {({ isActive }) => (
                     <>
-                      <div className={`p-2 rounded-lg transition-all duration-200 ${
-                        isActive ? "bg-secondary-100" : "bg-gray-100"
-                      }`}>
+                      <div className="flex items-center justify-center w-8 h-8">
                         <ApperIcon 
                           name={item.icon} 
-                          className={`h-5 w-5 ${isActive ? "text-secondary-700" : "text-gray-500"}`} 
+                          className={`w-5 h-5 ${
+                            isActive ? "text-secondary-700" : "text-gray-400"
+                          }`}
                         />
                       </div>
                       <span className="font-medium">{item.name}</span>

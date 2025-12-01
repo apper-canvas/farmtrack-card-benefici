@@ -11,7 +11,8 @@ const Crops = lazy(() => import('@/components/pages/Crops'));
 const CropDetails = lazy(() => import('@/components/pages/CropDetails'));
 const Tasks = lazy(() => import('@/components/pages/Tasks'));
 const Weather = lazy(() => import("@/components/pages/Weather"));
-const Finance = lazy(() => import("@/components/pages/Finance"));
+const Finance = lazy(() => import('@/components/pages/Finance'));
+const Labor = lazy(() => import('@/components/pages/Labor'));
 const NotFound = lazy(() => import("@/components/pages/NotFound"));
 
 // Authentication pages
@@ -21,6 +22,7 @@ const Callback = lazy(() => import("@/components/pages/Callback"));
 const ErrorPage = lazy(() => import("@/components/pages/ErrorPage"));
 const ResetPassword = lazy(() => import("@/components/pages/ResetPassword"));
 const PromptPassword = lazy(() => import("@/components/pages/PromptPassword"));
+
 const createRoute = ({
   path,
   index,
@@ -50,24 +52,23 @@ const createRoute = ({
     },
   };
 
-  if (children && children.length > 0) {
+  if (children) {
     route.children = children;
   }
 
   return route;
 };
-
 const mainRoutes = [
   createRoute({
     index: true,
     element: <Dashboard />,
   }),
-createRoute({
+  createRoute({
     path: "farms",
     element: <Farms />,
   }),
   createRoute({
-path: "crops",
+    path: "crops",
     element: <Crops />,
   }),
   createRoute({
@@ -85,6 +86,10 @@ path: "crops",
   createRoute({
     path: "finance",
     element: <Finance />,
+  }),
+  createRoute({
+    path: "labor",
+    element: <Labor />,
   }),
   createRoute({
     path: "*",
