@@ -18,6 +18,11 @@ const navItems = [
       icon: "MapPin",
     },
     {
+      name: "Crops",
+      href: "crops",
+      icon: "Sprout",
+    },
+    {
       name: "Tasks",
       href: "tasks", 
       icon: "CheckSquare",
