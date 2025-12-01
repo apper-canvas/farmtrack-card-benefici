@@ -6,7 +6,7 @@ const SidebarNavigation = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { logout } = useAuth();
   
-  const navItems = [
+const navItems = [
     {
       name: "Dashboard",
       href: "",
@@ -17,7 +17,12 @@ const SidebarNavigation = () => {
       href: "farms",
       icon: "MapPin",
     },
-{
+    {
+      name: "Crops",
+      href: "crops",
+      icon: "Wheat",
+    },
+    {
       name: "Tasks",
       href: "tasks", 
       icon: "CheckSquare",
@@ -26,8 +31,8 @@ const SidebarNavigation = () => {
       name: "Weather",
       href: "weather",
       icon: "Cloud",
-},
-{
+    },
+    {
       name: "Finance",
       href: "finance",
       icon: "DollarSign",
