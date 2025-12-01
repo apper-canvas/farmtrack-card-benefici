@@ -200,14 +200,13 @@ farmFields.some(field => field.Id === (crop.field_id_c?.Id || crop.field_id_c))
     );
   };
 
-  const soilTypeOptions = [
+const soilTypeOptions = [
     { value: "Clay", label: "Clay" },
-    { value: "Clay Loam", label: "Clay Loam" },
-    { value: "Sandy Loam", label: "Sandy Loam" },
-    { value: "Silt Loam", label: "Silt Loam" },
     { value: "Loam", label: "Loam" },
-    { value: "Sandy", label: "Sandy" },
+    { value: "Sand", label: "Sand" },
     { value: "Silt", label: "Silt" },
+    { value: "Peat", label: "Peat" },
+    { value: "Chalk", label: "Chalk" },
   ];
 
   const cropOptions = [
