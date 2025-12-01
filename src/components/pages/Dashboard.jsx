@@ -42,14 +42,19 @@ const [data, setData] = useState({
     setError("");
     
     try {
-      const [farms, crops, tasks, weather, financialData] = await Promise.all([
+const [farmsResult, tasksResult, weatherResult, financialResult] = await Promise.all([
         farmService.getAll(),
         taskService.getAll(),
         weatherService.getCurrentWeather(),
         financeService.getTransactionSummary(),
       ]);
 
-setData({ farms, tasks, weather, financialData });
+      setData({ 
+        farms: Array.isArray(farmsResult) ? farmsResult : [],
+        tasks: Array.isArray(tasksResult) ? tasksResult : [],
+        weather: weatherResult,
+        financialData: financialResult
+      });
     } catch (err) {
       console.error("Failed to load dashboard data:", err);
       setError("Failed to load dashboard data. Please try again.");
@@ -84,8 +89,9 @@ const getStatsData = () => {
     const totalFarms = data.farms.length;
     const activeCrops = data.farms.reduce((count, farm) => count + (farm.crops?.length || 0), 0);
     
-    const pendingTasks = data.tasks.filter(task => !task.completed_c).length;
-    const overdueTasks = data.tasks.filter(task => 
+const tasks = Array.isArray(data.tasks) ? data.tasks : [];
+    const pendingTasks = tasks.filter(task => !task.completed_c).length;
+    const overdueTasks = tasks.filter(task => 
       !task.completed_c && isOverdue(task.due_date_c)
     ).length;
     
@@ -94,13 +100,14 @@ const getStatsData = () => {
       activeCrops,
       pendingTasks,
       overdueTasks,
-      activeTasks: data.tasks?.filter(task => task.status === "pending").length || 0,
+      activeTasks: tasks.filter(task => task.status === "pending").length || 0,
     };
   };
 
   const getTodaysTasks = () => {
-    return data.tasks
-.filter(task => !task.completed_c)
+    const tasks = Array.isArray(data.tasks) ? data.tasks : [];
+    return tasks
+      .filter(task => !task.completed_c)
       .filter(task => isDueSoon(task.due_date_c, 2) || isOverdue(task.due_date_c))
       .slice(0, 5);
   };
@@ -261,8 +268,8 @@ const stats = getStatsData();
                   todaysTasks.map(task => (
                     <TaskCard
                       key={task.Id}
-                      task={task}
-                      crop={data.crops.find(c => c.Id === task.cropId)}
+task={task}
+                      crop={null}
                       onComplete={handleTaskComplete}
                       className="border border-gray-100"
                     />
