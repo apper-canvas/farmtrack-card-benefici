@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { cropService } from "@/services/api/cropService";
 import { toast } from "react-toastify";
 import ApperIcon from "@/components/ApperIcon";
@@ -13,13 +14,13 @@ import ProgressBar from "@/components/molecules/ProgressBar";
 import { formatDate, getCropGrowthStage, getDaysUntilHarvest } from "@/utils/dateUtils";
 
 const Crops = () => {
+  const navigate = useNavigate();
   const [crops, setCrops] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [editingCrop, setEditingCrop] = useState(null);
   const [deletingCrop, setDeletingCrop] = useState(null);
-
   // Form state
   const [form, setForm] = useState({
     name: "",
@@ -231,8 +232,12 @@ const Crops = () => {
               const progress = getGrowthProgress(crop);
               const daysUntilHarvest = getDaysUntilHarvest(crop.harvest_date_c);
               
-              return (
-                <div key={crop.Id} className="bg-white rounded-xl shadow-card hover:shadow-card-hover transition-all duration-200 card-hover overflow-hidden">
+return (
+                <div 
+                  key={crop.Id} 
+                  className="bg-white rounded-xl shadow-card hover:shadow-card-hover transition-all duration-200 card-hover overflow-hidden cursor-pointer"
+                  onClick={() => navigate(`/crops/${crop.Id}`)}
+                >
                   <div className="p-6">
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex-1">
@@ -250,14 +255,17 @@ const Crops = () => {
                       </div>
                       
                       <div className="flex items-center space-x-1 ml-2">
-                        <button
+<button
                           onClick={() => handleEdit(crop)}
                           className="p-2 text-gray-400 hover:text-secondary-600 rounded-lg hover:bg-gray-100 transition-colors"
                         >
                           <ApperIcon name="Edit2" className="h-4 w-4" />
                         </button>
                         <button
-                          onClick={() => handleDelete(crop)}
+onClick={(e) => {
+                            e.stopPropagation();
+                            handleDelete(crop);
+                          }}
                           disabled={deletingCrop === crop.Id}
                           className="p-2 text-gray-400 hover:text-red-600 rounded-lg hover:bg-red-50 transition-colors disabled:opacity-50"
                         >
