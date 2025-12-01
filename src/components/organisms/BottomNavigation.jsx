@@ -13,8 +13,13 @@ const BottomNavigation = () => {
       name: "Farms",
       href: "farms",
       icon: "MapPin",
+},
+    {
+      name: "Crops",
+      href: "crops",
+      icon: "Wheat",
     },
-{
+    {
       name: "Tasks",
       href: "tasks",
       icon: "CheckSquare",
@@ -22,18 +27,18 @@ const BottomNavigation = () => {
     {
       name: "Weather",
       href: "weather",
-icon: "Cloud",
+      icon: "Cloud",
     },
     {
       name: "Finance",
-      path: "/finance",
+      href: "finance",
       icon: "DollarSign",
     },
   ];
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-gray-200 shadow-lg">
-      <div className="grid grid-cols-5 h-16">
+<div className="grid grid-cols-6 h-16">
         {navItems.map((item) => (
           <NavLink
             key={item.name}

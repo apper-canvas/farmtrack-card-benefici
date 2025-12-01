@@ -20,17 +20,31 @@
             "label": "User must be logged in to manage farms",
             "rule": "authenticated"
           }
-        ]
+]
       },
       "redirectOnDeny": "/login"
+    }
+  },
+  "/crops": {
+    "allow": {
+      "when": {
+        "conditions": [
+          {
+            "label": "User must be logged in to view crops",
+            "rule": "authenticated"
+          }
+        ]
+      },
+      "redirectOnDeny": "/login",
+      "excludeRedirectQuery": false
     }
   },
   "/tasks": {
     "allow": {
       "when": {
         "conditions": [
-          {
-            "label": "User must be logged in to manage tasks",
+{
+            "label": "User must be logged in to view tasks",
             "rule": "authenticated"
           }
         ]
