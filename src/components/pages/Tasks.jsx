@@ -9,7 +9,6 @@ import Loading from "@/components/ui/Loading";
 import ErrorView from "@/components/ui/ErrorView";
 import Empty from "@/components/ui/Empty";
 import { taskService } from "@/services/api/taskService";
-import { cropService } from "@/services/api/cropService";
 import { fieldService } from "@/services/api/fieldService";
 import { farmService } from "@/services/api/farmService";
 import { toast } from "react-toastify";
@@ -44,14 +43,14 @@ title: "",
     setLoading(true);
     setError("");
     
-    try {
-      const [tasks, crops, fields, farms] = await Promise.all([
-taskService.getAll(),
+try {
+      const [tasks, farms, fields] = await Promise.all([
+        taskService.getAll(),
         farmService.getAll(),
         fieldService.getAll(),
       ]);
 
-      setData({ tasks, crops, fields, farms });
+      setData({ tasks, fields, farms });
     } catch (err) {
       console.error("Failed to load tasks data:", err);
       setError("Failed to load tasks data. Please try again.");
