@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { NavLink, Outlet } from "react-router-dom";
 import ApperIcon from "@/components/ApperIcon";
+import { useAuth } from "@/layouts/Root";
 const SidebarNavigation = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const { logout } = useAuth();
   
   const navItems = [
     {
@@ -114,12 +116,8 @@ const SidebarNavigation = () => {
                   <p className="text-xs text-gray-500">Premium Account</p>
                 </div>
               </div>
-              <button
-                onClick={() => {
-                  const { useAuth } = require('@/layouts/Root');
-                  const { logout } = useAuth();
-                  logout();
-                }}
+<button
+                onClick={logout}
                 className="text-xs text-gray-500 hover:text-gray-700 transition-colors"
               >
                 Logout
