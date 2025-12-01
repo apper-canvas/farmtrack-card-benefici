@@ -349,18 +349,19 @@ const getFinancialSummary = () => {
                 </Button>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-4">
+<form onSubmit={handleSubmit} className="space-y-4">
                 <FormField
                   label="Transaction Type"
                   type="select"
                   name="type"
                   value={formData.type}
                   onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.value, category: '' }))}
+                  options={[
+                    { value: "expense", label: "Expense" },
+                    { value: "income", label: "Income" }
+                  ]}
                   required
-                >
-                  <option value="expense">Expense</option>
-                  <option value="income">Income</option>
-                </FormField>
+                />
 
                 <FormField
                   label="Amount ($)"
@@ -384,19 +385,21 @@ const getFinancialSummary = () => {
                   required
                 />
 
-                <FormField
+<FormField
                   label="Category"
                   type="select"
                   name="category"
                   value={formData.category}
                   onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
+                  options={[
+                    { value: "", label: "Select category" },
+                    ...(formData.type === 'expense' ? expenseCategories : incomeCategories).map(category => ({
+                      value: category,
+                      label: category
+                    }))
+                  ]}
                   required
-                >
-                  <option value="">Select category</option>
-                  {(formData.type === 'expense' ? expenseCategories : incomeCategories).map(category => (
-                    <option key={category} value={category}>{category}</option>
-                  ))}
-                </FormField>
+                />
 
                 <FormField
                   label="Date"
